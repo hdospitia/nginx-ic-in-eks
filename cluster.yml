@@ -1,0 +1,43 @@
+---
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: testing
+  region: us-east-1
+
+vpc:
+  clusterEndpoints:
+    publicAccess: true
+    privateAccess: true
+  # publicAccessCIDRs: ["190.84.116.76/32"]
+
+iam:
+  withOIDC: true
+
+addons:
+  - name: vpc-cni
+  - name: coredns
+  - name: kube-proxy
+  - name: aws-ebs-csi-driver
+    wellKnownPolicies:
+      ebsCSIController: true
+
+availabilityZones: ["us-east-1a", "us-east-1b"]
+
+managedNodeGroups:
+  - name: ng-1
+    minSize: 2
+    maxSize: 5
+    spot: true
+    instanceTypes: ["t3.small", "t3.medium"]
+    availabilityZones: ["us-east-1a"]
+    privateNetworking: true
+    volumeType: gp3
+    volumeEncrypted: true
+    volumeSize: 20
+
+cloudWatch:
+    clusterLogging:
+        enableTypes: ["all"]
+        logRetentionInDays: 3
