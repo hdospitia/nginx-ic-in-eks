@@ -1,6 +1,6 @@
 # NGINX in EKS
 
-## Key aspects:
+## Key aspects
 
 - Take care of the required NGINX version: OSS or Plus.
 - Validate if your architecture requires CRDs.
@@ -9,15 +9,13 @@
 - NLB allows to manage non HTTP/S traffic with NGINX.
 - To make adjustments like above, it is preffered to pull the Helm Chart and set the right values in the values.yaml file.
 
-## Installation:
+## Installation
 
-Helm from registry
+Helm from registry (and for this excercise):
 
-    kubectl apply -f https://raw.githubusercontent.com/nginxinc/kubernetes-ingress/v3.5.1/deploy/crds.yaml
-    helm install nginx-ic oci://ghcr.io/nginxinc/charts/nginx-ingress --version 1.2.1
-    helm uninstall nginx-ic
+    CHART_VERSION=1.2.1 helm install -n ngxinx-ingress-controller-system --create-namespace nginx-ic oci://ghcr.io/nginxinc/charts/nginx-ingress --version $CHART_VERSION --values values.yaml
 
-Helm from local. Dont forget to update the values with:
+Helm from local. Dont forget to update the values with below configuration if you are still using the default Classic Load Balancer:
 
     controller.service.annotations: service.beta.kubernetes.io/aws-load-balancer-type: nlb
     controller.config.entries:
@@ -25,10 +23,6 @@ Helm from local. Dont forget to update the values with:
         real-ip-header: "proxy_protocol"
         set-real-ip-from: "0.0.0.0/0"
 
-Install CRDs:
-
-    kubectl apply -f https://raw.githubusercontent.com/nginxinc/kubernetes-ingress/v3.5.1/deploy/crds.yaml
-        
 Pull and install Helm Chart:
     
     helm pull oci://ghcr.io/nginxinc/charts/nginx-ingress --untar --version 1.2.1
@@ -38,29 +32,29 @@ Pull and install Helm Chart:
 
 # Test with sample app
 
-Namespace
+Namespace:
 
     kubectl create ns app
 
-Workload
+Workload:
 
     kubectl -n app apply -f https://raw.githubusercontent.com/nginxinc/kubernetes-ingress/main/examples/ingress-resources/complete-example/cafe.yaml
 
-Secret
+Secret:
 
     kubectl -n app apply -f https://raw.githubusercontent.com/nginxinc/kubernetes-ingress/main/examples/ingress-resources/complete-example/cafe-secret.yaml
 
-Ingress
+Ingress:
 
     kubectl -n app apply -f https://raw.githubusercontent.com/nginxinc/kubernetes-ingress/main/examples/ingress-resources/complete-example/cafe-ingress.yaml
 
-Clean up
+Clean up:
 
     kubectl delete ns app --grace-period=0 --force
     helm uninstall -n nginx-ic-system nginx-ic
     kubectl delete ns nginx-ic-system
 
-Documentation
+# Documentation
 
 - [NGINX Ingress Controller](https://docs.nginx.com/nginx-ingress-controller/)
 - [NGINX Ingress Controller in Kubernetes](https://kubernetes.github.io/ingress-nginx/user-guide/exposing-tcp-udp-services/)

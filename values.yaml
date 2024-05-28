@@ -1,0 +1,10 @@
+controller:
+  config:
+    ## Enable this configuration if you are using AWS Classic Load Balancer
+    # entries:
+    #   proxy-protocol: "True"
+    #   real-ip-header: "proxy_protocol"
+    #   set-real-ip-from: "0.0.0.0/0"
+  service:
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-type: nlb
