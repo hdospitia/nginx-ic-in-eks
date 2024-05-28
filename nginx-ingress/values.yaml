@@ -101,10 +101,11 @@ controller:
     annotations: {}
 
     ## The entries of the ConfigMap for customizing NGINX configuration.
-    entries:
-      proxy-protocol: "True"
-      real-ip-header: "proxy_protocol"
-      set-real-ip-from: "0.0.0.0/0"
+    # entries:
+    # Enable this configuration if you are using AWS Classic Load Balancer
+    #   proxy-protocol: "True"
+    #   real-ip-header: "proxy_protocol"
+    #   set-real-ip-from: "0.0.0.0/0"
 
   ## It is recommended to use your own TLS certificates and keys
   defaultTLS:
